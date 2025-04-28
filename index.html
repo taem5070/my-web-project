@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบลูกค้า + QR + แต้มสะสม + เปลี่ยนชื่อ (Tailwind)</title>
+
+  <!-- เรียกใช้ TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- เรียกใช้ Library QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <!-- เชื่อมไฟล์ script.js -->
+  <script defer src="script.js"></script>
+</head>
+<body class="bg-gray-100 p-6 flex flex-col items-center min-h-screen">
+
+<!-- ปุ่มเมนู -->
+<div class="w-full max-w-md">
+  <button class="menu-btn bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mb-4" onclick="showSection('register')">📥 สมัครลูกค้า</button>
+  <button class="menu-btn bg-green-500 text-white font-bold py-2 px-4 rounded w-full mb-4" onclick="showSection('search')">🔎 เช็กข้อมูลลูกค้า</button>
+</div>
+
+<!-- ส่วนสมัครลูกค้า -->
+<div id="register" class="section hidden bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+  <h2 class="text-xl font-bold mb-4">📥 สมัครลูกค้า</h2>
+  <input type="text" id="registerPhone" placeholder="📱 กรอกเบอร์ เช่น 0881234567" class="border rounded p-2 w-full mb-3">
+  <button onclick="registerUser()" class="bg-blue-500 text-white py-2 rounded w-full">✅ สมัคร</button>
+  <div id="registerResult" class="mt-4 text-xl"></div>
+</div>
+
+<!-- ส่วนเช็กข้อมูล -->
+<div id="search" class="section hidden bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+  <h2 class="text-xl font-bold mb-4">🔎 เช็กข้อมูลลูกค้า</h2>
+  <input type="text" id="searchPhone" placeholder="📞 กรอกเบอร์" class="border rounded p-2 w-full mb-3">
+  <button onclick="searchPhone()" class="bg-green-500 text-white py-2 rounded w-full">📂 ดูข้อมูล</button>
+  <div id="result" class="mt-4 text-xl"></div>
+  <div id="qrcode" class="flex justify-center mt-4 text-xl"></div> <!-- ✅ จัดกลางพอดี -->
+</div>
+
+</body>
+</html>
