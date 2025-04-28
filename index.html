@@ -3,42 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบลูกค้า + QR + แต้มสะสม + เปลี่ยนชื่อ (Tailwind)</title>
+  <title>ระบบเพิ่มแต้ม + แลกของรางวัล</title>
 
-  <!-- เรียกใช้ TailwindCSS -->
+  <!-- เรียก Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- เรียกใช้ Library QR Code -->
+  <!-- เรียก QR Code Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-  <!-- เชื่อมไฟล์ script.js -->
-  <script defer src="script.js"></script>
+  <style>
+    .section { display: none; }
+  </style>
 </head>
-<body class="bg-gray-100 p-6 flex flex-col items-center min-h-screen">
+<body class="bg-gray-100 min-h-screen p-6 flex flex-col items-center">
 
-<!-- ปุ่มเมนู -->
+<!-- เมนูปุ่ม -->
 <div class="w-full max-w-md">
-  <button class="menu-btn bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mb-4" onclick="showSection('register')">📥 สมัครลูกค้า</button>
-  <button class="menu-btn bg-green-500 text-white font-bold py-2 px-4 rounded w-full mb-4" onclick="showSection('search')">🔎 เช็กข้อมูลลูกค้า</button>
+  <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mb-4" onclick="showSection('addPoints')">➕ เพิ่มแต้ม</button>
+  <button class="bg-green-500 text-white font-bold py-2 px-4 rounded w-full mb-4" onclick="showSection('redeem')">🎁 แลกของรางวัล</button>
 </div>
 
-<!-- ส่วนสมัครลูกค้า -->
-<div id="register" class="section hidden bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-  <h2 class="text-xl font-bold mb-4">📥 สมัครลูกค้า</h2>
-  <input type="text" id="registerPhone" placeholder="📱 กรอกเบอร์ เช่น 0881234567" class="border rounded p-2 w-full mb-3">
-  <button onclick="registerUser()" class="bg-blue-500 text-white py-2 rounded w-full">✅ สมัคร</button>
-  <div id="registerResult" class="mt-4 text-xl"></div>
+<!-- ส่วนเพิ่มแต้ม -->
+<div id="addPoints" class="section bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+  <h2 class="text-xl font-bold mb-4">➕ เพิ่มแต้ม (100 บาท = 1 แต้ม)</h2>
+
+  <input type="text" id="addPointPhone" placeholder="📱 เบอร์โทรศัพท์" class="border p-2 w-full rounded mb-3">
+  
+  <button onclick="startScannerForAddPoint()" class="bg-purple-500 text-white py-2 rounded w-full mb-3">
+    📷 สแกน QR เพื่อกรอกเบอร์
+  </button>
+
+  <input type="number" id="amount" placeholder="💵 จำนวนเงิน (บาท)" class="border p-2 w-full rounded mb-3">
+
+  <button onclick="addPoints()" class="bg-blue-600 text-white py-2 rounded w-full">➕ เพิ่มแต้ม</button>
+
+  <div id="addPointResult" class="mt-4 text-xl"></div>
+
+  <div id="reader-add" class="mt-4 hidden mx-auto w-[300px] h-[300px]"></div>
 </div>
 
-<!-- ส่วนเช็กข้อมูล -->
-<div id="search" class="section hidden bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-  <h2 class="text-xl font-bold mb-4">🔎 เช็กข้อมูลลูกค้า</h2>
-  <input type="text" id="searchPhone" placeholder="📞 กรอกเบอร์" class="border rounded p-2 w-full mb-3">
-  <button onclick="searchPhone()" class="bg-green-500 text-white py-2 rounded w-full">📂 ดูข้อมูล</button>
-  <div id="result" class="mt-4 text-xl"></div>
-  <div id="qrcode" class="flex justify-center mt-4 text-xl"></div> <!-- ✅ จัดกลางพอดี -->
+<!-- ส่วนแลกแต้ม -->
+<div id="redeem" class="section bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+  <h2 class="text-xl font-bold mb-4">🎁 แลกของรางวัล</h2>
+
+  <input type="text" id="redeemPhone" placeholder="📞 เบอร์โทรศัพท์ หรือสแกน QR" class="border p-2 w-full rounded mb-3">
+  
+  <button onclick="startScannerForRedeem()" class="bg-purple-500 text-white py-2 rounded w-full mb-3">
+    📷 สแกน QR เพื่อกรอกเบอร์
+  </button>
+
+  <select id="rewardSelect" class="border p-2 w-full rounded mb-3 text-lg">
+    <option value="">-- เลือกของรางวัล --</option>
+    <option value="คูปองเครื่องดื่ม">คูปองเครื่องดื่ม (10 แต้ม)</option>
+    <option value="ของขวัญพิเศษ">ของขวัญพิเศษ (10 แต้ม)</option>
+    <option value="บัตรกำนัลเงินสด">บัตรกำนัลเงินสด (10 แต้ม)</option>
+  </select>
+
+  <button onclick="redeemPoints()" class="bg-green-600 text-white py-2 rounded w-full">🎁 แลกของรางวัล</button>
+
+  <div id="redeemResult" class="mt-4 text-lg"></div>
+
+  <div id="reader" class="mt-4 hidden mx-auto w-[300px] h-[300px]"></div>
 </div>
+
+<!-- เรียก script.js -->
+<script src="script.js" defer></script>
 
 </body>
 </html>
